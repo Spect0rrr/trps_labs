@@ -1,0 +1,211 @@
+#include <iostream>
+#include <vector>
+#include <string>
+
+struct Recorders {
+	int code_group;
+	std::string data;
+	std::string name;
+	std::string family_name;
+	std::string surename;
+	std::string del_flag;
+};
+
+void Create_mas();
+void Show_recorders(const std::vector<Recorders>& recorders);
+void Ordering();
+void Finding();
+void Delete_elements();
+
+
+std::vector<Recorders> recorders;
+
+void Create_mas() {
+	Recorders tempRecorders;
+	int userinput_code_group;
+	std::string userinput_data;
+	std::string userinput_name;
+	std::string userinput_family_name;
+	std::string userinput_surename;
+	std::string userinput_del_flag;
+
+	while (true) {
+		std::cout << "Код группы: ";
+		std::cin >> userinput_code_group;
+
+		if (userinput_code_group == 0) {
+			break;
+		}
+
+		tempRecorders.code_group = userinput_code_group;
+
+		std::cout << "Дата: ";
+		std::cin.ignore();
+		std::getline(std::cin, userinput_data);
+
+		tempRecorders.data = userinput_data;
+
+		std::cout << "Имя: ";
+		std::getline(std::cin, userinput_name);
+
+		tempRecorders.name = userinput_name;
+
+		std::cout << "Фамилия: ";
+		std::getline(std::cin, userinput_family_name);
+
+		tempRecorders.family_name = userinput_family_name;
+
+		std::cout << "Отчество: ";
+		std::getline(std::cin, userinput_surename);
+
+		tempRecorders.surename = userinput_surename;
+
+		userinput_del_flag = "-";
+		tempRecorders.del_flag = userinput_del_flag;
+		std::cout << std::endl;
+		recorders.push_back(tempRecorders);
+	}
+}
+
+void Show_recorders(const std::vector<Recorders>& recorders) {
+	std::cout << std::endl << "Список записей: " << std::endl;
+	std::cout << "--------------------------------------" << std::endl;
+	for (const auto& record : recorders) {
+		std::cout << "Код группы: " << record.code_group << std::endl;
+		std::cout << "Дата: " << record.data << std::endl;
+		std::cout << "Имя: " << record.name << std::endl;
+		std::cout << "Фамилия: " << record.family_name << std::endl;
+		std::cout << "Отчество: " << record.surename << std::endl;
+		std::cout << "Метка для удаления: " << record.del_flag << std::endl;
+		std::cout << "--------------------------------------" << std::endl;
+	}
+}
+
+void Ordering() {
+	for (size_t i = 1; i < recorders.size(); i++) {
+		Recorders key = recorders[i];
+		int j = i - 1;
+		while (j >= 0 && recorders[j].code_group > key.code_group) {
+			recorders[j + 1] = recorders[j];
+			--j;
+		}
+		recorders[j + 1] = key;
+	}
+}
+
+void Finding() {
+	int quantity = size(recorders);
+	int right = size(recorders);
+	int left = 0;
+	int center = 0;
+	int finding_number;
+
+	std::cout << "Введите требуемую группу: ";
+	std::cin >> finding_number;
+	std::cout << std::endl;
+
+	while (left <= right) {
+		center = (left + right) / 2;
+		if (finding_number < recorders[center].code_group) {
+			right = center - 1;
+		}
+		else if (finding_number > recorders[center].code_group) {
+			left = center + 1;
+		}
+		else {
+			finding_number = center;
+			break;
+		} 
+	}
+	std::cout << "По запросу найдено: " << std::endl << std::endl;
+	std::cout << "-------------------------------" << std::endl;
+	std::cout << "Код группы: " << recorders[finding_number].code_group << std::endl;
+	std::cout << "Дата: " << recorders[finding_number].data << std::endl;
+	std::cout << "Имя: " << recorders[finding_number].name << std::endl;
+	std::cout << "Фамилия: " << recorders[finding_number].family_name << std::endl;
+	std::cout << "Отчество: " << recorders[finding_number].surename << std::endl;
+	std::cout << "-------------------------------" << std::endl;
+}
+
+void Delete_elements() {
+
+	int user_number;
+
+	std::cout << "Введите группы, которые требуется удалить: " << std::endl;
+	
+	while (true) {							//здесь делаем метки
+		std::cin >> user_number;
+		if (user_number == 0) {
+			break;
+		}
+		for (int i = 0; i < recorders.size(); i++) {
+			if (recorders[i].code_group == user_number) {
+				recorders[i].del_flag = "+";
+			}
+		}
+	}
+	Show_recorders(recorders);
+
+	Recorders temp;
+
+	std::vector<Recorders> helper_for_deleting;
+
+	for (int i = 0; i < recorders.size(); i++) {
+		if (recorders[i].del_flag == "+") {
+			temp = recorders[i];
+			helper_for_deleting.push_back(temp);
+			auto iter = recorders.cbegin();
+			recorders.erase(iter + i);
+			--i;
+		}
+	}
+
+	recorders.insert(recorders.end(), helper_for_deleting.begin(), helper_for_deleting.end());
+
+	for (int i = 0; i < helper_for_deleting.size(); i++) {
+		recorders.pop_back();
+	}
+}
+
+
+int main() {
+	setlocale(LC_ALL, "ru");
+
+	bool exit = false;
+	int choise;
+
+	std::cout << "Введите требуемые записи: " << std::endl << std::endl;
+	Create_mas();
+	Show_recorders(recorders);
+
+	while (!exit) {
+		std::cout << "Выберете один из интересующих вас пунктов:" << std::endl;
+		std::cout << "1. Провести поиск группы (дихотомический) по ее коду. Перед поиском требуется провести упорядочение (цифра 2)" << std::endl;
+		std::cout << "2. Провести упорядочение групп (вставкой)" << std::endl;
+		std::cout << "3. Провести корректировку групп (удаление маркировкой)" << std::endl;
+		std::cout << "4. Прекратить работу" << std::endl << std::endl;
+		std::cin >> choise;
+		switch (choise) {
+		case 1:
+			Finding();
+			break;
+		case 2:	
+			Ordering();
+			Show_recorders(recorders);
+			break;
+		case 3:
+			Delete_elements();
+			Show_recorders(recorders);
+			break;
+		case 4:
+			std::cout << "Вы прекратили работу с программой" << std::endl;
+			exit = true;
+			break;
+		default:
+			std::cout << "Введено неправильное число. Попробуйте снова." << std::endl;
+			break;
+		}
+	}
+	return 0;
+}
+
