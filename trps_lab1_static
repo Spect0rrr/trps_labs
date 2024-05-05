@@ -1,0 +1,70 @@
+#include <iostream>
+#include <string>
+
+struct Person {
+	int code_group;
+	std::string name;
+	std::string second_name;
+	std::string father_name;
+	std::string data;
+	std::string del_flaq;
+};
+
+const int Count_of_persons = 150;
+Person mas_persons[Count_of_persons] = {};
+
+void Create_mas() {
+	Person tempPerson;
+	int userinput_code_group;
+	std::string userinput_data;
+	std::string userinput_name;
+	std::string userinput_second_name;
+	std::string userinput_father_name;
+	std::string userinput_del_flag;
+
+	int i = 0;
+
+	while (true) {
+		std::cout << "Код группы: ";
+		std::cin >> userinput_code_group;
+
+		if (userinput_code_group == 0) {
+			break;
+		}
+
+		tempPerson.code_group = userinput_code_group;
+
+		std::cout << "Дата: ";
+		std::cin.ignore();
+		std::getline(std::cin, userinput_data);
+
+		tempPerson.data = userinput_data;
+
+		std::cout << "Имя: ";
+		std::getline(std::cin, userinput_name);
+
+		tempPerson.name = userinput_name;
+
+		std::cout << "Фамилия: ";
+		std::getline(std::cin, userinput_second_name);
+
+		tempPerson.second_name = userinput_second_name;
+
+		std::cout << "Отчество: ";
+		std::getline(std::cin, userinput_father_name);
+
+		tempPerson.father_name = userinput_father_name;
+
+		userinput_del_flag = "-";
+		tempPerson.del_flaq = userinput_del_flag;
+		std::cout << std::endl;
+		mas_persons[i] = tempPerson;
+		i++;
+	}
+}
+
+int main() {
+	setlocale(LC_ALL, "ru");
+	Create_mas();
+	return 1;
+}
