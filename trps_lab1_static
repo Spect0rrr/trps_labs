@@ -1,70 +1,234 @@
 #include <iostream>
 #include <string>
+#include <locale>
 
 struct Person {
-	int code_group;
-	std::string name;
-	std::string second_name;
-	std::string father_name;
-	std::string data;
-	std::string del_flaq;
+    int code_group;
+    std::string name;
+    std::string second_name;
+    std::string father_name;
+    std::string data;
+    std::string del_flag;
 };
+
+void Create_mas();
+void Show_persons(Person mas_persons[]);
+void Finding_person(Person mas_persons[], int);
+void Left_recursiv(Person mas_persons[], int, int);
+void Right_recursiv(Person mas_persons[], int, int, int);
+void Ordering();
 
 const int Count_of_persons = 150;
 Person mas_persons[Count_of_persons] = {};
+int count = 0;
 
-void Create_mas() {
-	Person tempPerson;
-	int userinput_code_group;
-	std::string userinput_data;
-	std::string userinput_name;
-	std::string userinput_second_name;
-	std::string userinput_father_name;
-	std::string userinput_del_flag;
+void Create_mas() {             //создание и заполнение массива студентами 
+    Person tempPerson;
+    int userinput_code_group;
+    std::string userinput_data;
+    std::string userinput_name;
+    std::string userinput_second_name;
+    std::string userinput_father_name;
+    std::string userinput_del_flag;
 
-	int i = 0;
+    int i = 0;
 
-	while (true) {
-		std::cout << "Код группы: ";
-		std::cin >> userinput_code_group;
+    while (i < Count_of_persons) {
+        std::cout << "Код группы (0 для завершения): ";
+        std::cin >> userinput_code_group;
 
-		if (userinput_code_group == 0) {
-			break;
-		}
+        if (userinput_code_group == 0) {
+            break;
+        }
 
-		tempPerson.code_group = userinput_code_group;
+        tempPerson.code_group = userinput_code_group;
 
-		std::cout << "Дата: ";
-		std::cin.ignore();
-		std::getline(std::cin, userinput_data);
+        std::cout << "Дата: ";
+        std::cin.ignore();
+        std::getline(std::cin, userinput_data);
 
-		tempPerson.data = userinput_data;
+        tempPerson.data = userinput_data;
 
-		std::cout << "Имя: ";
-		std::getline(std::cin, userinput_name);
+        std::cout << "Имя: ";
+        std::getline(std::cin, userinput_name);
 
-		tempPerson.name = userinput_name;
+        tempPerson.name = userinput_name;
 
-		std::cout << "Фамилия: ";
-		std::getline(std::cin, userinput_second_name);
+        std::cout << "Фамилия: ";
+        std::getline(std::cin, userinput_second_name);
 
-		tempPerson.second_name = userinput_second_name;
+        tempPerson.second_name = userinput_second_name;
 
-		std::cout << "Отчество: ";
-		std::getline(std::cin, userinput_father_name);
+        std::cout << "Отчество: ";
+        std::getline(std::cin, userinput_father_name);
 
-		tempPerson.father_name = userinput_father_name;
+        tempPerson.father_name = userinput_father_name;
 
-		userinput_del_flag = "-";
-		tempPerson.del_flaq = userinput_del_flag;
-		std::cout << std::endl;
-		mas_persons[i] = tempPerson;
-		i++;
-	}
+        tempPerson.del_flag = "-"; 
+
+        mas_persons[i] = tempPerson;
+        i++;
+    }
+
+    if (i == Count_of_persons) {
+        std::cout << "Массив заполнен. Нельзя добавить больше записей." << '\n';
+    }
+
+    count = i; //длина массива
+}
+
+void Show_persons(Person mas_persons[]) {       //для вывода всех студентов
+    std::cout << "\nСписок студентов:\n";
+    std::cout << "------------------------------------\n";
+    for (int i = 0; i < count; i++) {
+        std::cout << "Код группы: " << mas_persons[i].code_group << '\n';
+        std::cout << "Дата: " << mas_persons[i].data << '\n';
+        std::cout << "Имя: " << mas_persons[i].name << '\n';
+        std::cout << "Фамилия: " << mas_persons[i].second_name << '\n';
+        std::cout << "Отчество: " << mas_persons[i].father_name << '\n';
+        std::cout << "Метка для удаления: " << mas_persons[i].del_flag << '\n';
+        std::cout << "--------------------------------------" << '\n';
+    }
+}
+
+void Left_recursiv(Person mas_persons[], int center, int finding_number) {      //вспомогательная ф-ция для поиска
+    for (int i = center - 1; i >= 0 && mas_persons[i].code_group == finding_number; --i) {
+        std::cout << "------------------------------------\n";
+        std::cout << "Код группы: " << mas_persons[i].code_group << '\n';
+        std::cout << "Дата: " << mas_persons[i].data << '\n';
+        std::cout << "Имя: " << mas_persons[i].name << '\n';
+        std::cout << "Фамилия: " << mas_persons[i].second_name << '\n';
+        std::cout << "Отчество: " << mas_persons[i].father_name << '\n';
+        std::cout << "Метка для удаления: " << mas_persons[i].del_flag << '\n';
+        std::cout << "--------------------------------------" << '\n';
+    }
+}
+
+void Right_recursiv(Person mas_persons[], int center, int finding_number, int count) {  //вспомогательная ф-ция для поиска
+    for (int i = center + 1; i < count && mas_persons[i].code_group == finding_number; ++i) {
+        std::cout << "------------------------------------\n";
+        std::cout << "Код группы: " << mas_persons[i].code_group << '\n';
+        std::cout << "Дата: " << mas_persons[i].data << '\n';
+        std::cout << "Имя: " << mas_persons[i].name << '\n';
+        std::cout << "Фамилия: " << mas_persons[i].second_name << '\n';
+        std::cout << "Отчество: " << mas_persons[i].father_name << '\n';
+        std::cout << "Метка для удаления: " << mas_persons[i].del_flag << '\n';
+        std::cout << "--------------------------------------" << '\n';
+    }
+}
+
+void Finding_person(Person mas_persons[], int count) {  //основная функция для поиска
+    int finding_number;        
+    int right = count;
+    int left = 0;
+    int center = 0;
+
+    std::cout << "Введите требуемую группу: ";
+    std::cin >> finding_number;
+    std::cout << '\n';
+
+    while (left <= right) {
+        center = (left + right) / 2;
+        if (finding_number < mas_persons[center].code_group) {
+            right = center - 1;
+        }
+        else if (finding_number > mas_persons[center].code_group) {
+            left = center + 1;
+        }
+        else {
+            break;
+        }
+    }
+
+    std::cout << "------------------------------------\n";
+    std::cout << "Код группы: " << mas_persons[center].code_group << '\n';
+    std::cout << "Дата: " << mas_persons[center].data << '\n';
+    std::cout << "Имя: " << mas_persons[center].name << '\n';
+    std::cout << "Фамилия: " << mas_persons[center].second_name << '\n';
+    std::cout << "Отчество: " << mas_persons[center].father_name << '\n';
+    std::cout << "Метка для удаления: " << mas_persons[center].del_flag << '\n';
+    std::cout << "--------------------------------------" << '\n';
+
+    Left_recursiv(mas_persons, center, finding_number);
+    Right_recursiv(mas_persons, center, finding_number, count);
+}
+
+
+void Ordering() {                       //упорядочение
+    for (int i = 0; i < count; i++) {
+        Person temp = mas_persons[i];
+        int j = i - 1;
+        while (j >= 0 && mas_persons[j].code_group > temp.code_group) {
+            mas_persons[j + 1] = mas_persons[j];
+            --j;
+        }
+        mas_persons[j + 1] = temp;
+    }
+}
+
+void Deleting() {                   //удаление по фамилии
+    std::string user_second_name;
+    std::cout << "Введите фамилию студента, которого нужно удалить: ";
+    std::cin >> user_second_name;
+    int time_el = 0;
+    int count_for_true_deleting = 0;
+    for (int i = 0; i < count; i++) {
+        if (user_second_name == mas_persons[i].second_name) {
+            mas_persons[i].del_flag = "+";
+            time_el = i;
+            count_for_true_deleting++;
+        }
+    }
+    if (count_for_true_deleting > 0) {
+        Show_persons(mas_persons);
+        for (int j = time_el + 1; j < count; j++) {
+            mas_persons[j - 1] = mas_persons[j];
+        }
+        count--;
+        Show_persons(mas_persons);
+    }
+    else {
+        std::cout << "Такого студента не существует, попробуйте еще раз.\n";
+    }
 }
 
 int main() {
-	setlocale(LC_ALL, "ru");
-	Create_mas();
-	return 1;
+    setlocale(LC_ALL, "ru");
+
+    bool exit = false;
+    int users_number;
+
+    std::cout << "Введите требуемые записи:\n\n";
+    Create_mas();
+    Show_persons(mas_persons);
+
+    while (!exit) {
+        std::cout << "Выберете один из интересующих вас пунктов:\n";
+        std::cout << "1. Провести поиск группы (дихотомический) по ее коду. Перед поиском требуется провести упорядочение (цифра 2)\n";
+        std::cout << "2. Провести упорядочение групп (вставкой)\n";
+        std::cout << "3. Провести корректировку групп (удаление маркировкой)\n";
+        std::cout << "4. Прекратить работу\n";
+        std::cin >> users_number;
+        switch (users_number) {
+        case 1:
+            Finding_person(mas_persons, count);
+            break;
+        case 2:
+            Ordering();
+            Show_persons(mas_persons);
+            break;
+        case 3:
+            Show_persons(mas_persons);
+            Deleting();
+            break;
+        case 4:
+            std::cout << "Вы прекратили работу с программой\n";
+            exit = true;
+            break;
+        default:
+            std::cout << "Введено неправильное число. Попробуйте снова.\n";
+            break;
+        }
+    }
+    return 0; 
 }
